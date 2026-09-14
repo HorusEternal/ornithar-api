@@ -1,0 +1,38 @@
+version: '3'
+
+tasks:
+    build:
+        cmds:
+            - docker compose build
+
+    up:
+        cmds:
+            - docker compose up -d --build
+
+    down:
+        cmds:
+            - docker compose down
+
+    logs:
+        cmds:
+            - docker compose logs -f
+
+    shell:
+        cmds:
+            - docker compose exec api sh
+
+    doctrine:
+        cmds:
+            - docker compose exec api php bin/console doctrine:migrations:status
+
+    test:
+        cmds:
+            - docker compose exec api composer test
+
+    phpstan:
+        cmds:
+            - docker compose exec api composer phpstan
+
+    check:
+        cmds:
+            - docker compose exec api composer check

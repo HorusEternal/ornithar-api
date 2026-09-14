@@ -1,0 +1,36 @@
+services:
+    api:
+        build:
+            context: .
+        ports:
+            - '5020:80'
+        env_file:
+            - .env
+        environment:
+            SERVER_NAME: ':80'
+            SERVER_ROOT: /app/public
+        depends_on:
+            postgres:
+                condition: service_healthy
+        volumes:
+            - ./:/app
+            - composer_vendor:/app/vendor
+
+    postgres:
+        image: postgres:18
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+            interval: 5s
+            timeout: 5s
+            retries: 10
+            start_period: 5s
+        volumes:
+            - postgres_data:/var/lib/postgresql
+
+volumes:
+    composer_vendor:
+    postgres_data:
